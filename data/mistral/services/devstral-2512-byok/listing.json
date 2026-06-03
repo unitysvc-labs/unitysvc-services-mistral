@@ -29,13 +29,14 @@
     "output": "0",
     "type": "one_million_tokens"
   },
+  "name": "mistral/devstral-2512",
   "schema": "listing_v1",
   "status": "ready",
   "time_created": "2026-01-26T02:53:52.642Z",
   "user_access_interfaces": {
     "provider_api": {
       "access_method": "http",
-      "base_url": "${API_GATEWAY_BASE_URL}/mistral",
+      "base_url": "${API_GATEWAY_BASE_URL}/{{ service_name }}",
       "routing_key": {
         "model": "devstral-2512"
       }
