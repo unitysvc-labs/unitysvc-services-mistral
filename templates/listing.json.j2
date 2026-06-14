@@ -1,7 +1,6 @@
 {%- set is_embedding = service_type == "embedding" -%}
 
 {
-  "schema": "listing_v1",
   "status": "{{ status | default('ready') }}",
   "currency": "USD",
   {#- name = <provider>/<bare> per the platform service-naming convention
