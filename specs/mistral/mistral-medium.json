@@ -1,0 +1,38 @@
+{
+  "parameters": {
+    "api_base_url": "https://api.mistral.ai/v1",
+    "description": "Mistral Medium language model",
+    "details": {
+      "context_length": 262144,
+      "litellm_provider": "mistral",
+      "max_input_tokens": 32000,
+      "max_output_tokens": 8191,
+      "max_tokens": 8191,
+      "metadata_sources": {
+        "context_length": "openrouter"
+      },
+      "mode": "chat",
+      "object": "model",
+      "owned_by": "mistralai",
+      "parameter_count": null
+    },
+    "display_name": "Mistral Medium",
+    "env_api_key_name": "MISTRAL_API_KEY",
+    "list_price": {
+      "description": "Service provider charges $2.7 / $8.1 per 1M input/output tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
+    "offering_name": "mistral-medium",
+    "payout_price": {
+      "description": "Service provider charges $2.7 / $8.1 per 1M input/output tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
+    "provider_display_name": "Mistral AI",
+    "service_type": "llm",
+    "status": "ready"
+  }
+}

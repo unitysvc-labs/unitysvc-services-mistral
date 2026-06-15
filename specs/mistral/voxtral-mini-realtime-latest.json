@@ -1,0 +1,20 @@
+{
+  "parameters": {
+    "api_base_url": "https://api.mistral.ai/v1",
+    "description": "Voxtral Mini Realtime Latest language model",
+    "details": {
+      "context_length": null,
+      "object": "model",
+      "owned_by": "mistralai",
+      "parameter_count": null
+    },
+    "display_name": "Voxtral Mini Realtime Latest",
+    "env_api_key_name": "MISTRAL_API_KEY",
+    "list_price": null,
+    "offering_name": "voxtral-mini-realtime-latest",
+    "payout_price": null,
+    "provider_display_name": "Mistral AI",
+    "service_type": "llm",
+    "status": "ready"
+  }
+}
