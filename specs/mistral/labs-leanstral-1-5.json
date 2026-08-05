@@ -1,19 +1,17 @@
 {
   "parameters": {
     "api_base_url": "https://api.mistral.ai/v1",
-    "description": "Mistral Ocr 2512 language model",
+    "description": "Labs Leanstral 1 5 language model",
     "details": {
       "context_length": null,
-      "litellm_provider": "mistral",
-      "mode": "ocr",
       "object": "model",
       "owned_by": "mistralai",
       "parameter_count": null
     },
-    "display_name": "Mistral Ocr 2512",
+    "display_name": "Labs Leanstral 1 5",
     "env_api_key_name": "MISTRAL_API_KEY",
     "list_price": null,
-    "offering_name": "mistral-ocr-2512",
+    "offering_name": "labs-leanstral-1-5",
     "payout_price": null,
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
