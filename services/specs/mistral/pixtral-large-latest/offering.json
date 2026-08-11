@@ -3,9 +3,13 @@
     "llm"
   ],
   "currency": "USD",
-  "description": "Pixtral Large Latest language model",
+  "description": "Pixtral Large Latest language model\n\nPixtral Large Latest is served by Mistral AI over an OpenAI-compatible API with a 128000-token context window. Requests are proxied through the UnitySVC gateway and billed per token.\n\nReach it through the UnitySVC gateway with your own Mistral AI API key (the byok channel). The endpoint accepts both OpenAI Chat Completions and Anthropic Messages requests \u2014 the gateway auto-detects the dialect, translates to the upstream, and returns the response in the format you sent. See the code examples for both styles.",
   "details": {
     "context_length": 128000,
+    "input_formats": [
+      "openai",
+      "anthropic"
+    ],
     "litellm_provider": "mistral",
     "max_input_tokens": 128000,
     "max_output_tokens": 128000,
@@ -15,6 +19,10 @@
     },
     "mode": "chat",
     "object": "model",
+    "output_formats": [
+      "openai_response",
+      "anthropic_response"
+    ],
     "owned_by": "mistralai",
     "parameter_count": null
   },
@@ -35,11 +43,14 @@
   ],
   "time_created": "2026-01-26T02:53:52.635Z",
   "upstream_access_config": {
-    "Mistral AI API": {
+    "byok": {
       "access_method": "http",
       "api_key": "${ customer_secrets.MISTRAL_API_KEY }",
       "base_url": "https://api.mistral.ai",
       "rate_limits": [],
+      "request_transformer": {
+        "llm_translator": "anthropic_to_openai"
+      },
       "routing_key": {
         "model": "pixtral-large-latest"
       }
