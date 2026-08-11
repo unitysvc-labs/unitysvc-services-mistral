@@ -1,12 +1,21 @@
 {
   "name": "{{ offering_name }}",
   "display_name": "{{ display_name }}",
+{#- Only chat (llm) services get the OpenAI/Anthropic dialect treatment; a
+    translator/dual-formats on a non-chat service (e.g. embeddings) would be
+    semantically wrong. #}
+{%- set is_chat = service_type == 'llm' %}
 {#- 3-paragraph marketplace description (the validator requires >=2 paragraphs;
     the populate script emits a one-line brief). Teaser + detail + how-to. #}
 {%- set _brief = description | default(display_name ~ ' — a ' ~ service_type ~ ' model served by ' ~ provider_display_name, true) %}
 {%- set _ctx = ' with a ' ~ details.context_length ~ '-token context window' if details.context_length else '' %}
+{%- if is_chat %}
 {%- set _detail = display_name ~ ' is served by ' ~ provider_display_name ~ ' over an OpenAI-compatible API' ~ _ctx ~ '. Requests are proxied through the UnitySVC gateway and billed per token.' %}
 {%- set _howto = 'Reach it through the UnitySVC gateway with your own ' ~ provider_display_name ~ ' API key (the byok channel). The endpoint accepts both OpenAI Chat Completions and Anthropic Messages requests — the gateway auto-detects the dialect, translates to the upstream, and returns the response in the format you sent. See the code examples for both styles.' %}
+{%- else %}
+{%- set _detail = display_name ~ ' is a ' ~ service_type ~ ' service from ' ~ provider_display_name ~ _ctx ~ ', served over its native API. Requests are proxied through the UnitySVC gateway and billed per token.' %}
+{%- set _howto = 'Reach it through the UnitySVC gateway with your own ' ~ provider_display_name ~ ' API key (the byok channel). See the code examples for usage.' %}
+{%- endif %}
 {%- set _description = _brief ~ '\n\n' ~ _detail ~ '\n\n' ~ _howto %}
   "description": {{ _description | tojson }},
   "service_type": "{{ service_type }}",
@@ -14,10 +23,12 @@
   "status": "{{ status | default('ready') }}",
   "currency": "USD",
   "tags": ["ai", "gateway", "byok"],
-{#- Merge the dual-dialect formats into the provider's details (R8); the
-    llm_translator below exposes the OpenAI upstream in both dialects. #}
+{#- Merge the dual-dialect formats into the provider's details (R8), chat only;
+    the llm_translator below exposes the OpenAI upstream in both dialects. #}
 {%- set _details = details.copy() %}
+{%- if is_chat %}
 {%- set _ = _details.update({"input_formats": ["openai", "anthropic"], "output_formats": ["openai_response", "anthropic_response"]}) %}
+{%- endif %}
   "details": {{ _details | tojson }},
 {%- if payout_price %}
   "payout_price": {{ payout_price | tojson }},
@@ -28,8 +39,8 @@
       "base_url": "{{ api_base_url | replace('/v1', '') }}",
       "api_key": "${ customer_secrets.{{ env_api_key_name }} }",
       "rate_limits": [],
-      "routing_key": {"model": "{{ offering_name }}"},
-      "request_transformer": {"llm_translator": "anthropic_to_openai"}
+      "routing_key": {"model": "{{ offering_name }}"}{% if is_chat %},
+      "request_transformer": {"llm_translator": "anthropic_to_openai"}{% endif %}
     }
   }
 }
