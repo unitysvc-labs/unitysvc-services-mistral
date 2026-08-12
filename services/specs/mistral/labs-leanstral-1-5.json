@@ -1,13 +1,13 @@
 {
   "parameters": {
     "api_base_url": "https://api.mistral.ai/v1",
-    "description": "Open Mistral Nemo language model",
+    "description": "Labs Leanstral 1 5 language model",
     "details": {
-      "context_length": 128000,
+      "context_length": 262144,
       "litellm_provider": "mistral",
-      "max_input_tokens": 128000,
-      "max_output_tokens": 128000,
-      "max_tokens": 128000,
+      "max_input_tokens": 262144,
+      "max_output_tokens": 131072,
+      "max_tokens": 131072,
       "metadata_sources": {
         "context_length": "litellm"
       },
@@ -16,17 +16,17 @@
       "owned_by": "mistralai",
       "parameter_count": null
     },
-    "display_name": "Open Mistral Nemo",
+    "display_name": "Labs Leanstral 1 5",
     "env_api_key_name": "MISTRAL_API_KEY",
     "list_price": {
-      "description": "Service provider charges $0.3 / $0.3 per 1M input/output tokens",
+      "description": "Service provider charges $0 / $0 per 1M input/output tokens",
       "input": "0",
       "output": "0",
       "type": "one_million_tokens"
     },
-    "offering_name": "open-mistral-nemo",
+    "offering_name": "labs-leanstral-1-5",
     "payout_price": {
-      "description": "Service provider charges $0.3 / $0.3 per 1M input/output tokens",
+      "description": "Service provider charges $0 / $0 per 1M input/output tokens",
       "input": "0",
       "output": "0",
       "type": "one_million_tokens"
