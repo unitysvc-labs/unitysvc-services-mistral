@@ -25,6 +25,28 @@ ENV_API_KEY_NAME = "MISTRAL_API_KEY"
 
 SCRIPT_DIR = Path(__file__).parent
 
+# Model families advertised by /models that are NOT served by
+# /v1/chat/completions — calling them there returns
+# {"message": "Invalid model: <id>", "code": "1500"} with HTTP 400, so every
+# rendered code example and connectivity test fails and the service is rejected.
+#
+# They need their own endpoints (/v1/ocr, the audio/realtime APIs, moderation),
+# for which the platform has neither a service_type nor connectivity/code-example
+# presets — tracked in unitysvc/unitysvc#1781, the same gap that made us skip
+# Groq's non-chat modalities. Skip them here until that lands; the embedding and
+# rerank families are handled by _determine_service_type and stay.
+SKIP_SUBSTRINGS = (
+    "ocr",         # /v1/ocr — document understanding
+    "moderation",  # moderation API
+    "tts",         # speech synthesis
+    "transcribe",  # speech-to-text
+    "realtime",    # streaming audio sessions
+    # Voxtral *mini* is audio-understanding only and 400s on chat; voxtral-small
+    # DOES serve chat completions (verified against the live API), so match the
+    # family prefix rather than "voxtral".
+    "voxtral-mini",
+)
+
 
 class ModelSource:
     """Fetches models and yields template dictionaries."""
@@ -53,15 +75,27 @@ class ModelSource:
             print(f"Error listing models: {e}")
             return
 
+        skipped = []
         for i, model_info in enumerate(models, 1):
             model_id = model_info.get("id", "")
             print(f"[{i}/{len(models)}] {model_id}")
+
+            reason = next(
+                (kw for kw in SKIP_SUBSTRINGS if kw in model_id.lower()), None
+            )
+            if reason:
+                skipped.append(model_id)
+                print(f"  SKIP (not a chat-completions model: {reason}) — see unitysvc#1781")
+                continue
 
             # Build template variables
             template_vars = self._build_template_vars(model_id, model_info)
             if template_vars:
                 yield template_vars
                 print("  OK")
+
+        if skipped:
+            print(f"\nSkipped {len(skipped)} non-chat model(s): {', '.join(skipped)}")
 
     def _build_template_vars(self, model_id: str, model_info: dict) -> dict:
         """Build template variables for a model."""
