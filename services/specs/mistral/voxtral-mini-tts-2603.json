@@ -4,6 +4,8 @@
     "description": "Voxtral Mini Tts 2603 language model",
     "details": {
       "context_length": null,
+      "litellm_provider": "mistral",
+      "mode": "audio_speech",
       "object": "model",
       "owned_by": "mistralai",
       "parameter_count": null

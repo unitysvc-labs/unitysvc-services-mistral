@@ -4,6 +4,8 @@
     "description": "Mistral Ocr 2512 language model",
     "details": {
       "context_length": null,
+      "litellm_provider": "mistral",
+      "mode": "ocr",
       "object": "model",
       "owned_by": "mistralai",
       "parameter_count": null
