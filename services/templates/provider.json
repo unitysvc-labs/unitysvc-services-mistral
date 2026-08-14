@@ -2,6 +2,7 @@
   "contact_email": "contact@mistral.ai",
   "display_name": "Mistral AI",
   "homepage": "https://mistral.ai/",
+  "logo": "https://docs.mistral.ai/img/logo.svg",
   "name": "mistral",
   "status": "ready",
   "terms_of_service": "https://mistral.ai/terms#terms-of-use",
