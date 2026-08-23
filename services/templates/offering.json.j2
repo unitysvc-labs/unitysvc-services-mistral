@@ -19,11 +19,21 @@
 {%- set _dual = ' — callable in both OpenAI and Anthropic API styles through the UnitySVC gateway.' %}
 {%- set _brief = (_base ~ _dual) if ((_base | length) + (_dual | length) < 195) else _base %}
 {%- set _ctx = ' with a ' ~ details.context_length ~ '-token context window' if details.context_length else '' %}
+{#- Billing sentence, shared by both branches. "billed per token" used to sit
+    here, which read as though UnitySVC metered the tokens; it does not — this
+    is BYOK, the customer's own key pays the provider and the gateway price is
+    zero. The upstream rate belongs in prose as well as in the price cell's
+    hover note (see listing.json.j2): a `title` attribute is unreachable on
+    touch, absent from the API and MCP catalog surfaces (`market_list_services`
+    returns the description, not a rendered tooltip), and not searchable. For a
+    BYOK listing that rate is the difference between "free" and real money. #}
+{%- set _at_rate = (' at ' ~ pricing_note) if pricing_note else '' %}
+{%- set _billing = ' Requests are proxied through the UnitySVC gateway; you bring your own ' ~ provider_display_name ~ ' API key, so token usage is billed by ' ~ provider_display_name ~ ' directly' ~ _at_rate ~ ', and the service is free through UnitySVC.' %}
 {%- if is_chat %}
-{%- set _detail = display_name ~ ' is served by ' ~ provider_display_name ~ ' over an OpenAI-compatible API' ~ _ctx ~ '. Requests are proxied through the UnitySVC gateway and billed per token.' %}
+{%- set _detail = display_name ~ ' is served by ' ~ provider_display_name ~ ' over an OpenAI-compatible API' ~ _ctx ~ '.' ~ _billing %}
 {%- set _howto = 'Reach it through the UnitySVC gateway with your own ' ~ provider_display_name ~ ' API key (the byok channel). See the code examples for both styles.' %}
 {%- else %}
-{%- set _detail = display_name ~ ' is a ' ~ service_type ~ ' service from ' ~ provider_display_name ~ _ctx ~ ', served over its native API. Requests are proxied through the UnitySVC gateway and billed per token.' %}
+{%- set _detail = display_name ~ ' is a ' ~ service_type ~ ' service from ' ~ provider_display_name ~ _ctx ~ ', served over its native API.' ~ _billing %}
 {%- set _howto = 'Reach it through the UnitySVC gateway with your own ' ~ provider_display_name ~ ' API key (the byok channel). See the code examples for usage.' %}
 {%- endif %}
 {#- Dedicated interoperability paragraph: the dual-dialect endpoint is the

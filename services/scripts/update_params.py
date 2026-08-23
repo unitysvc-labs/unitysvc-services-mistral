@@ -136,16 +136,24 @@ class ModelSource:
         if canonical["sources"]:
             details["metadata_sources"] = canonical["sources"]
 
-        # Extract upstream pricing for description, but set prices to 0 for BYOK
+        # Extract upstream pricing for description, but set prices to 0 for BYOK.
+        #
+        # `pricing_note` is the bare rate card — no "Service provider charges"
+        # prefix, because the copy that consumes it already names the biller.
+        # It is a param in its own right so the templates can place it: the
+        # listing cell puts it behind the `|` of the price-description grammar
+        # (unitysvc/unitysvc#1886) and the offering description states it in
+        # prose. Do NOT fold it back into `pricing["description"]` — that dict
+        # feeds `payout_price` too, which is seller-facing and stays as it is.
         pricing = None
+        pricing_note = None
         if model_data:
             if "input_cost_per_token" in model_data and "output_cost_per_token" in model_data:
                 input_price = round(float(
                     model_data["input_cost_per_token"]) * 1_000_000, 4)
                 output_price = round(float(
                     model_data["output_cost_per_token"]) * 1_000_000, 4)
-                price_desc = (
-                    f"Service provider charges "
+                pricing_note = (
                     f"${self._format_price(input_price)} / "
                     f"${self._format_price(output_price)} "
                     f"per 1M input/output tokens"
@@ -154,21 +162,20 @@ class ModelSource:
                     "type": "one_million_tokens",
                     "input": "0",
                     "output": "0",
-                    "description": price_desc,
+                    "description": f"Service provider charges {pricing_note}",
                 }
                 # Include cached_input if available
                 if "cache_read_input_token_cost" in model_data:
                     cached_price = round(float(
                         model_data["cache_read_input_token_cost"]) * 1_000_000, 4)
                     pricing["cached_input"] = "0"
-                    price_desc = (
-                        f"Service provider charges "
+                    pricing_note = (
                         f"${self._format_price(input_price)} / "
                         f"${self._format_price(output_price)} / "
                         f"${self._format_price(cached_price)} "
                         f"per 1M input/output/cached tokens"
                     )
-                    pricing["description"] = price_desc
+                    pricing["description"] = f"Service provider charges {pricing_note}"
 
         return {
             # Folder path under specs/ == listing.name == "<provider>/<model_id>"
@@ -183,6 +190,9 @@ class ModelSource:
             "status": "ready",
             "details": details,
             "payout_price": pricing,
+            # Bare upstream rate card, placed by the templates (listing price
+            # cell's hover note + the offering description).
+            "pricing_note": pricing_note,
             # Listing fields
             "list_price": pricing,
             # Provider config (for templates)

@@ -30,6 +30,7 @@
       "output": "0",
       "type": "one_million_tokens"
     },
+    "pricing_note": "$8 / $24 per 1M input/output tokens",
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
     "status": "ready"
