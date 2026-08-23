@@ -44,7 +44,14 @@
   "summary": {{ _brief[:200] | tojson }},
   "description": {{ _description | tojson }},
   "service_type": "{{ service_type }}",
-  "capabilities": ["{{ service_type }}"],
+{#- Platform capability vocabulary (unitysvc docs/capabilities.yml). Mapped from
+    service_type rather than echoed: `_determine_service_type` in the populator
+    classifies by model id and can emit embedding and rerank as well as llm.
+    `vision_language_model` maps to chat — vision is an attribute of a chat call
+    (an image in the request), not a capability of its own. -#}
+{%- set _cap = {"llm": "chat", "embedding": "embed", "rerank": "rerank",
+                "vision_language_model": "chat"}.get(service_type, "chat") %}
+  "capabilities": {{ capabilities | default([_cap]) | tojson }},
   "status": "{{ status | default('ready') }}",
   "currency": "USD",
   "tags": ["ai", "gateway", "byok"],
