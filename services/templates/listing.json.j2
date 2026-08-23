@@ -52,10 +52,10 @@
       "$doc_preset": {"name": "llm_code_example_embed_requests", "meta": {"sleep_after_test": 5}}
     },
 
-    "Python function calling code example": {
-      "$doc_preset": {"name": "llm_code_example_fc_requests", "meta": {"sleep_after_test": 5}}
-    },
-
+{#- No function-calling example on the embedding branch: `llm_code_example_fc_requests`
+    posts a tools-bearing chat-completion body, which /v1/embeddings rejects. It
+    also contradicts the declared capability — an `embed` service must not ship an
+    example that only a `chat` service could pass. -#}
     "JavaScript code example": {
       "$doc_preset": {"name": "llm_code_example_embed_javascript", "meta": {"sleep_after_test": 5}}
     },
@@ -93,12 +93,19 @@
     },
 {%- endif %}
 
+{#- The connectivity test is the document the activation gate keys on
+    (`check_service_tests_passed`), so it has to probe the endpoint the service
+    actually serves: `llm_connectivity` POSTs a chat-completion body, which an
+    embedding model 400s. Dispatch it the same way as the code examples, or the
+    declared capability is never proven. -#}
     "Connectivity test": {
-      "$doc_preset": {"name": "llm_connectivity", "meta": {"sleep_after_test": 5}}
-    },
+      "$doc_preset": {"name": "{{ 'llm_connectivity_embed' if is_embedding else 'llm_connectivity' }}", "meta": {"sleep_after_test": 5}}
+    }
+{%- if not is_embedding %},
 
     "Default request body": {
       "$doc_preset": "llm_request_template"
     }
+{%- endif %}
   }
 }
