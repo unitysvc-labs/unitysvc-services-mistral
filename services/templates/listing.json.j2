@@ -7,7 +7,30 @@
       (unitysvc PR #1196 / issue #1138). #}
   "name": "{{ provider_name }}/{{ offering_name }}",
 {%- if list_price %}
-  "list_price": {{ list_price | tojson }},
+{#- Price-cell copy follows the marketplace description grammar
+    (unitysvc/unitysvc#1886, PR #1887):
+
+        <amount> [ ~<intent> <PILL> ] [ | <hover note> ]
+
+    What used to sit here was the rate card itself — "Service provider charges
+    $0.3 / $0.9 per 1M input/output tokens" — a whole sentence in the amount
+    slot. The parser cannot style that: it is too long for the unit slot, and
+    it carries a currency symbol and a second "/", both of which the unit slot
+    rejects, so the cell degraded to one run of grey prose.
+
+    So: the amount is Free (this is BYOK — the customer's own Mistral key pays
+    Mistral, and UnitySVC meters nothing), *why* it is free rides the badge
+    slot as a pill, and the rate card rides the `|` note. That note is taken
+    first and consumed to end-of-string, which makes everything in it inert — a
+    rate full of "/" and "per" is safe there and ONLY there.
+
+    Composed here rather than written into the param file because
+    scripts/update_params.py rebuilds list_price on the nightly populate run
+    and would drop a hand-edited description within a day. It overrides only
+    `description`; `input`/`output`/`type` are carried through untouched, and
+    `payout_price` (seller-facing, same dict upstream) is not touched at all. #}
+{%- set _rate = (' | usage is billed by ' ~ provider_display_name ~ ' directly at ' ~ pricing_note) if pricing_note else '' %}
+  "list_price": {{ dict(list_price, description='Free ~ BYOK' ~ _rate) | tojson }},
 {%- endif %}
 
   "user_access_interfaces": {
