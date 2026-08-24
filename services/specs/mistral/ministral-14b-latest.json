@@ -13,6 +13,7 @@
     "list_price": null,
     "offering_name": "ministral-14b-latest",
     "payout_price": null,
+    "pricing_note": null,
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
     "status": "ready"
