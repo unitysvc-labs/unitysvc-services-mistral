@@ -3,13 +3,13 @@
     "api_base_url": "https://api.mistral.ai/v1",
     "description": "Devstral 2512 language model",
     "details": {
-      "context_length": 256000,
+      "context_length": 262144,
       "litellm_provider": "mistral",
       "max_input_tokens": 256000,
       "max_output_tokens": 256000,
       "max_tokens": 256000,
       "metadata_sources": {
-        "context_length": "litellm"
+        "context_length": "openrouter"
       },
       "mode": "chat",
       "object": "model",
