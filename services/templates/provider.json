@@ -4,6 +4,21 @@
   "homepage": "https://mistral.ai/",
   "logo": "https://docs.mistral.ai/img/logo.svg",
   "name": "mistral",
+  "rate_limits": [
+    {
+      "description": "Self-imposed ceiling so platform test sweeps cannot saturate the account; not a published provider limit.",
+      "limit": 10,
+      "name": "mistral_concurrency",
+      "unit": "concurrent"
+    },
+    {
+      "description": "Self-imposed ceiling so platform test sweeps cannot saturate the account; not a published provider limit.",
+      "limit": 100,
+      "name": "mistral_rpm",
+      "unit": "requests",
+      "window": "minute"
+    }
+  ],
   "status": "ready",
   "terms_of_service": "https://mistral.ai/terms#terms-of-use",
   "time_created": "2025-08-31T00:00:00Z"
