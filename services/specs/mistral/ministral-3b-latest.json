@@ -3,17 +3,35 @@
     "api_base_url": "https://api.mistral.ai/v1",
     "description": "Ministral 3B Latest language model",
     "details": {
-      "context_length": null,
+      "context_length": 131072,
+      "litellm_provider": "mistral",
+      "max_input_tokens": 131072,
+      "max_output_tokens": 131072,
+      "max_tokens": 131072,
+      "metadata_sources": {
+        "context_length": "litellm"
+      },
+      "mode": "chat",
       "object": "model",
       "owned_by": "mistralai",
       "parameter_count": null
     },
     "display_name": "Ministral 3B Latest",
     "env_api_key_name": "MISTRAL_API_KEY",
-    "list_price": null,
+    "list_price": {
+      "description": "Service provider charges $0.1 / $0.1 per 1M input/output tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
     "offering_name": "ministral-3b-latest",
-    "payout_price": null,
-    "pricing_note": null,
+    "payout_price": {
+      "description": "Service provider charges $0.1 / $0.1 per 1M input/output tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
+    "pricing_note": "$0.1 / $0.1 per 1M input/output tokens",
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
     "status": "ready"
