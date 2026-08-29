@@ -7,6 +7,7 @@ Yields model dictionaries that are rendered using Jinja2 templates.
 Usage: python scripts/update_services.py
 """
 
+import json
 import os
 import sys
 from pathlib import Path
@@ -24,6 +25,26 @@ API_BASE_URL = "https://api.mistral.ai/v1"
 ENV_API_KEY_NAME = "MISTRAL_API_KEY"
 
 SCRIPT_DIR = Path(__file__).parent
+SPECS_DIR = SCRIPT_DIR.parent / "specs"
+
+
+def committed_parameters(service_name: str) -> dict:
+    """The parameters already committed for ``service_name`` ({} if it is new).
+
+    unitysvc-sellers >= 0.3.1 keeps a committed value when the iterator yields
+    ``None`` for it: from inside the writer, a lookup that failed and a lookup
+    that legitimately found nothing are the same event. That is right for
+    enrichment, but it means a price we FAILED to derive gets re-shipped as
+    though it were this run's answer. Reading the previous value here is what
+    separates the two cases — see the price guard in ``_build_template_vars``.
+    """
+    path = SPECS_DIR / f"{service_name}.json"
+    if not path.is_file():
+        return {}
+    try:
+        return (json.loads(path.read_text()) or {}).get("parameters") or {}
+    except (OSError, ValueError):
+        return {}
 
 # Model families advertised by /models that are NOT served by
 # /v1/chat/completions — calling them there returns
@@ -60,6 +81,14 @@ class ModelSource:
         """Yield model dictionaries for template rendering."""
         # Fetch LiteLLM data once
         self.litellm_data = self.data_fetcher.fetch_litellm_model_data()
+        if not self.litellm_data:
+            print(
+                "Error: LiteLLM model data came back empty. Every price lookup "
+                "would fail, and unitysvc-sellers >= 0.3.1 would preserve the "
+                "committed prices instead — re-shipping stale rate cards as "
+                "though they were current."
+            )
+            sys.exit(1)
 
         print(f"Fetching models from {PROVIDER_DISPLAY_NAME} API...")
         try:
@@ -73,7 +102,18 @@ class ModelSource:
             print(f"Found {len(models)} models\n")
         except Exception as e:
             print(f"Error listing models: {e}")
-            return
+            # Not `return`. An empty iterator is indistinguishable from "the
+            # upstream retired its whole catalog": with deprecate_missing the
+            # writer would mark every committed service deprecated, and exiting
+            # 0 would make a failed fetch look like a clean no-change run.
+            sys.exit(1)
+
+        if not models:
+            print(
+                "Error: upstream enumerated zero models — refusing to treat an "
+                "empty enumeration as a retired catalog."
+            )
+            sys.exit(1)
 
         skipped = []
         for i, model_info in enumerate(models, 1):
@@ -99,6 +139,7 @@ class ModelSource:
 
     def _build_template_vars(self, model_id: str, model_info: dict) -> dict:
         """Build template variables for a model."""
+        service_name = f"{PROVIDER_NAME}/{model_id}"
         service_type = self._determine_service_type(model_id)
         display_name = model_id.replace("-", " ").replace("_", " ").title()
 
@@ -177,10 +218,26 @@ class ModelSource:
                     )
                     pricing["description"] = f"Service provider charges {pricing_note}"
 
+        # `list_price` is nullable and the schema does not require it, so a
+        # failed lookup is rejected by nothing downstream. And since
+        # unitysvc-sellers 0.3.1 preserves committed values against a yielded
+        # None, that failure now SHIPS THE PREVIOUS PRICE as though it
+        # were this run's answer. A model that has never appeared in the LiteLLM
+        # data has no committed value and nothing to silently ship; a model that
+        # had one and can no longer derive it is the regression, and it is fatal.
+        if pricing is None and committed_parameters(service_name).get("list_price") is not None:
+            print(
+                f"  FATAL: {model_id} has a committed list_price but no "
+                "input_cost_per_token/output_cost_per_token in this run's "
+                "LiteLLM data. Refusing to re-ship the previous price."
+            )
+            sys.exit(1)
+
         return {
-            # Folder path under specs/ == listing.name == "<provider>/<model_id>"
-            # (flat layout, #1263). populate_from_iterator preserves the slash.
-            "name": f"{PROVIDER_NAME}/{model_id}",
+            # The service's name IS its path under specs/ (flat layout, #1263).
+            # unitysvc-sellers >= 0.3.1 requires this key verbatim: `name_field`
+            # is gone and there is no fallback for a dict that omits it.
+            "service_name": service_name,
             # Offering name is the bare upstream model_id
             "offering_name": model_id,
             # Offering fields
@@ -228,7 +285,7 @@ def main():
     source = ModelSource(api_key)
     write_params_from_iterator(
         iterator=source.iter_models(),
-        output_dir=SCRIPT_DIR.parent / "specs",
+        output_dir=SPECS_DIR,
     )
 
 
