@@ -4,7 +4,7 @@
     "description": "Ministral 14B 2512 language model",
     "details": {
       "context_length": 262144,
-      "litellm_provider": "openrouter",
+      "litellm_provider": "mistral",
       "max_input_tokens": 262144,
       "max_output_tokens": 262144,
       "max_tokens": 262144,
@@ -34,6 +34,7 @@
     "pricing_note": "$0.2 / $0.2 per 1M input/output tokens",
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
-    "status": "ready"
+    "status": "ready",
+    "supports_function_calling": true
   }
 }

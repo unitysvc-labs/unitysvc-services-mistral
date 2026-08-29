@@ -36,6 +36,6 @@
     "pricing_note": "$1.4 / $4.4 / $0.14 per 1M input/output/cached tokens",
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
-    "status": "ready"
+    "status": "deprecated"
   }
 }
