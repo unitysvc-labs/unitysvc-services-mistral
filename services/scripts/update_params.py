@@ -244,6 +244,23 @@ class ModelSource:
             "display_name": display_name,
             "description": f"{display_name} language model",
             "service_type": service_type,
+            # Does this model accept a tools-bearing request? Mistral answers
+            # per model on the card itself, so this is copied from the upstream
+            # rather than inferred from the id or from a catalog-wide
+            # assumption. It drives the `feature:func-call` tag in
+            # templates/offering.json.j2 — the only tag the platform's closed
+            # vocabulary lets a seller declare (unitysvc docs/tags.yml).
+            #
+            # Always a real bool, never None: unitysvc-sellers >= 0.3.1 keeps
+            # the committed value when the iterator yields None, so a null here
+            # would re-ship an old `true` after Mistral stopped advertising the
+            # capability. A card without `capabilities` (the schema says there
+            # is none) reads as False, which drops the tag — the safe direction:
+            # a missing tag costs a catalog facet, a wrong one ships a
+            # tool-calling example that 400s in the customer's hands.
+            "supports_function_calling": bool(
+                (model_info.get("capabilities") or {}).get("function_calling")
+            ),
             "status": "ready",
             "details": details,
             "payout_price": pricing,

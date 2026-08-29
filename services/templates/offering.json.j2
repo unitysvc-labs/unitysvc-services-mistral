@@ -54,7 +54,27 @@
   "capabilities": {{ capabilities | default([_cap]) | tojson }},
   "status": "{{ status | default('ready') }}",
   "currency": "USD",
-  "tags": ["ai", "gateway", "byok"],
+{#- Tags come from the platform's CLOSED vocabulary (unitysvc docs/tags.yml).
+    The legacy trio — "ai", "gateway", "byok" — is gone: each one restated a
+    field the platform already derives (`service_type`, `gateway_type`, and the
+    enrollment channel named in `upstream_access_config` below), and ingest now
+    REJECTS any tag outside the vocabulary, so an upload carrying them fails
+    outright. `feature:func-call` is the only tag a seller may declare.
+
+    Keyed off a REAL per-model signal, not a catalog-wide assumption: Mistral's
+    `GET /v1/models` returns a `capabilities` object on every model card
+    (BaseModelCard.capabilities -> ModelCapabilities), and one of its fields is
+    `function_calling`. scripts/update_params.py copies it verbatim into
+    `supports_function_calling`, so this catalog advertises tool use per model,
+    on Mistral's own answer, and follows the upstream when a model's answer
+    changes.
+
+    Absent (a param file written before the populator captured the field) or
+    false renders NO tag — under-claiming until the next populate run rather
+    than shipping a tool-calling example to a model that would 400 on it. The
+    `is_chat` half keeps it off the embedding models, whose `capabilities`
+    report `function_calling: false` anyway. -#}
+  "tags": {{ (["feature:func-call"] if (is_chat and supports_function_calling) else []) | tojson }},
 {#- Merge the dual-dialect formats into the provider's details (R8), chat only;
     the llm_translator below exposes the OpenAI upstream in both dialects. #}
 {%- set _details = details.copy() %}
