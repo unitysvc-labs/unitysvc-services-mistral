@@ -3,17 +3,37 @@
     "api_base_url": "https://api.mistral.ai/v1",
     "description": "Mistral Code Fim Latest language model",
     "details": {
-      "context_length": null,
+      "context_length": 128000,
+      "litellm_provider": "mistral",
+      "max_input_tokens": 128000,
+      "max_output_tokens": 128000,
+      "max_tokens": 128000,
+      "metadata_sources": {
+        "context_length": "litellm"
+      },
+      "mode": "chat",
       "object": "model",
       "owned_by": "mistralai",
       "parameter_count": null
     },
     "display_name": "Mistral Code Fim Latest",
     "env_api_key_name": "MISTRAL_API_KEY",
-    "list_price": null,
+    "list_price": {
+      "cached_input": "0",
+      "description": "Service provider charges $0.3 / $0.9 / $0.03 per 1M input/output/cached tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
     "offering_name": "mistral-code-fim-latest",
-    "payout_price": null,
-    "pricing_note": null,
+    "payout_price": {
+      "cached_input": "0",
+      "description": "Service provider charges $0.3 / $0.9 / $0.03 per 1M input/output/cached tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
+    "pricing_note": "$0.3 / $0.9 / $0.03 per 1M input/output/cached tokens",
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
     "status": "ready",

@@ -19,19 +19,21 @@
     "display_name": "Codestral 2508",
     "env_api_key_name": "MISTRAL_API_KEY",
     "list_price": {
-      "description": "Service provider charges $0.3 / $0.9 per 1M input/output tokens",
+      "cached_input": "0",
+      "description": "Service provider charges $0.3 / $0.9 / $0.03 per 1M input/output/cached tokens",
       "input": "0",
       "output": "0",
       "type": "one_million_tokens"
     },
     "offering_name": "codestral-2508",
     "payout_price": {
-      "description": "Service provider charges $0.3 / $0.9 per 1M input/output tokens",
+      "cached_input": "0",
+      "description": "Service provider charges $0.3 / $0.9 / $0.03 per 1M input/output/cached tokens",
       "input": "0",
       "output": "0",
       "type": "one_million_tokens"
     },
-    "pricing_note": "$0.3 / $0.9 per 1M input/output tokens",
+    "pricing_note": "$0.3 / $0.9 / $0.03 per 1M input/output/cached tokens",
     "provider_display_name": "Mistral AI",
     "service_type": "llm",
     "status": "ready",
