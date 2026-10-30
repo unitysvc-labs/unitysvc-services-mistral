@@ -1,0 +1,41 @@
+{
+  "parameters": {
+    "api_base_url": "https://api.mistral.ai/v1",
+    "description": "Mistral Large 4 language model",
+    "details": {
+      "context_length": 1048576,
+      "litellm_provider": "mistral",
+      "max_input_tokens": 1048576,
+      "max_output_tokens": 1048576,
+      "metadata_sources": {
+        "context_length": "openrouter"
+      },
+      "mode": "chat",
+      "object": "model",
+      "owned_by": "mistralai",
+      "parameter_count": null
+    },
+    "display_name": "Mistral Large 4",
+    "env_api_key_name": "MISTRAL_API_KEY",
+    "list_price": {
+      "cached_input": "0",
+      "description": "Service provider charges $1.36 / $4.18 / $0.14 per 1M input/output/cached tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
+    "offering_name": "mistral-large-4",
+    "payout_price": {
+      "cached_input": "0",
+      "description": "Service provider charges $1.36 / $4.18 / $0.14 per 1M input/output/cached tokens",
+      "input": "0",
+      "output": "0",
+      "type": "one_million_tokens"
+    },
+    "pricing_note": "$1.36 / $4.18 / $0.14 per 1M input/output/cached tokens",
+    "provider_display_name": "Mistral AI",
+    "service_type": "llm",
+    "status": "ready",
+    "supports_function_calling": true
+  }
+}
