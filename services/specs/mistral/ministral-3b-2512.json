@@ -5,7 +5,7 @@
     "details": {
       "context_length": 131072,
       "litellm_provider": "mistral",
-      "max_input_tokens": 131072,
+      "max_input_tokens": 262144,
       "max_output_tokens": 131072,
       "metadata_sources": {
         "context_length": "openrouter"
