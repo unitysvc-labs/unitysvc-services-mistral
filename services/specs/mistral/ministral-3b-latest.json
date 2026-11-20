@@ -3,9 +3,9 @@
     "api_base_url": "https://api.mistral.ai/v1",
     "description": "Ministral 3B Latest language model",
     "details": {
-      "context_length": 131072,
+      "context_length": 262144,
       "litellm_provider": "mistral",
-      "max_input_tokens": 131072,
+      "max_input_tokens": 262144,
       "max_output_tokens": 131072,
       "metadata_sources": {
         "context_length": "litellm"
